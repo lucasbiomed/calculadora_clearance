@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearance São Francisco</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f4f3; color: #333; }
+       .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: center; }
+       .logo { max-width: 100%; height: auto; margin-bottom: 20px; border-radius: 10px; }
+        input { width: 90%; padding: 12px; margin: 8px 0; border: 1px solid #c8e6c9; border-radius: 8px; font-size: 16px; background-color: #fafafa; }
+        input:focus { border-color: #2e7d32; outline: none; background-color: #fff; }
+       .switch-container { margin: 15px 0; padding: 10px; background: #e8f5e9; border-radius: 8px; font-weight: bold; color: #1b5e20; }
+       .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+       .btn-calc { background-color: #2e7d32; color: white; }
+       .btn-calc:hover { background-color: #1b5e20; }
+       .btn-clear { background-color: #cfd8dc; color: #455a64; }
+       .btn-clear:hover { background-color: #b0bec5; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; min-height: 40px; color: #2e7d32; border: 1px dashed #2e7d32; }
+       .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://i.postimg.cc/BvSSwgKV/SFLOGO.jpg" class="logo" alt="Laboratório São Francisco">
+        
+        <h3>Calculadora de Clearance</h3>
+        
+        <input type="number" id="serumCr" placeholder="Creatinina Sérica (mg/dL)" step="0.01">
+        <input type="number" id="urineCr" placeholder="Creatinina Urina 24h (mg/dL)" step="0.01">
+        <input type="number" id="volume" placeholder="Volume Urinário 24h (mL)" step="1">
+
+        <div class="switch-container">
+            <input type="checkbox" id="useAntro" checked onchange="toggleAntro()"> 
+            <label for="useAntro">Incluir Peso e Altura</label>
+        </div>
+
+        <div id="antroFields">
+            <input type="number" id="weight" placeholder="Peso (kg)" step="0.1">
+            <input type="number" id="height" placeholder="Altura (cm)" step="1">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-calc" onclick="calculate()">CALCULAR</button>
+            <button class="btn-clear" onclick="clearFields()">LIMPAR</button>
+        </div>
+
+        <div id="result">Aguardando dados...</div>
+    </div>
+
+    <script>
+        function toggleAntro() {
+            document.getElementById('antroFields').classList.toggle('hidden',!document.getElementById('useAntro').checked);
+        }
+
+        function clearFields() {
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = "");
+            document.getElementById('result').innerText = "Dados limpos.";
+            document.getElementById('result').style.color = "#455a64";
+        }
+
+        function calculate() {
+            const sCr = parseFloat(document.getElementById('serumCr').value);
+            const uCr = parseFloat(document.getElementById('urineCr').value);
+            const vol = parseFloat(document.getElementById('volume').value);
+            const useAntro = document.getElementById('useAntro').checked;
+
+            if (!sCr ||!uCr ||!vol) { 
+                alert("Por favor, preencha os dados de creatinina e volume!"); 
+                return; 
+            }
+
+            // Volume por minuto: V = VolTotal / 1440
+            const volumeMin = vol / 1440.0;
+            // Clearance Absoluto: (UCr * Vmin) / SCr
+            const absCl = (uCr * volumeMin) / sCr;
+
+            let finalResult = "";
+            if (useAntro) {
+                const w = parseFloat(document.getElementById('weight').value);
+                const h = parseFloat(document.getElementById('height').value);
+                if (!w ||!h) { alert("Informe peso e altura para o cálculo corrigido!"); return; }
+                
+                // Fórmula de Mosteller para ASC: sqrt( (h * w) / 3600 )
+                const bsa = Math.sqrt((h * w) / 3600.0);
+                // Clearance Corrigido: Absoluto * (1.73 / ASC)
+                const corrCl = absCl * (1.73 / bsa);
+                
+                finalResult = `Clearance Corrigido: ${corrCl.toFixed(2)} mL/min/1,73m²<br><small>Superfície Corporal: ${bsa.toFixed(2)} m²</small>`;
+            } else {
+                finalResult = `Clearance Absoluto: ${absCl.toFixed(2)} mL/min`;
+            }
+            
+            document.getElementById('result').innerHTML = finalResult;
+            document.getElementById('result').style.color = "#2e7d32";
+        }
+    </script>
+</body>
+</html>

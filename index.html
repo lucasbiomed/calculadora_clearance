@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Lab</title>
+    <title>Calculadora Laboratorial</title>
+    <link rel="manifest" href="manifest.json">
     <style>
         body { font-family: sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #f4f7f6; }
         img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
@@ -12,7 +13,8 @@
         .tab-content { display: none; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .active { display: block; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; font-size: 16px; margin-top: 10px; }
+        button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button.clear-btn { width: 100%; padding: 10px; background: #757575; color: white; border: none; border-radius: 5px; margin-top: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -25,6 +27,7 @@
         <button class="tab-button" onclick="mudarAba(event, 'acidoUrico')">Á. Úrico</button>
     </div>
 
+    <!-- ABAS -->
     <div id="clearance" class="tab-content active">
         <input type="number" id="uCreat" placeholder="Creatinina Urinária (mg/dL)">
         <input type="number" id="sCreat" placeholder="Creatinina Sérica (mg/dL)">
@@ -32,6 +35,7 @@
         <input type="number" id="peso" placeholder="Peso (kg)">
         <input type="number" id="altura" placeholder="Altura (cm)">
         <button class="calc-btn" onclick="calcClearance()">Calcular</button>
+        <button class="clear-btn" onclick="limparCampos('clearance')">Limpar</button>
         <p id="resClearance"></p>
     </div>
 
@@ -39,6 +43,7 @@
         <input type="number" id="concUreia" placeholder="Concentração (mg/dL)">
         <input type="number" id="volUreia" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcUreia()">Calcular</button>
+        <button class="clear-btn" onclick="limparCampos('ureia')">Limpar</button>
         <p id="resUreia"></p>
     </div>
 
@@ -46,6 +51,7 @@
         <input type="number" id="concAU" placeholder="Concentração (mg/dL)">
         <input type="number" id="volAU" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcAU()">Calcular</button>
+        <button class="clear-btn" onclick="limparCampos('acidoUrico')">Limpar</button>
         <p id="resAU"></p>
     </div>
 
@@ -56,37 +62,23 @@
             document.getElementById(nomeAba).classList.add('active');
             evt.currentTarget.classList.add('active');
         }
-
+        function limparCampos(aba) {
+            document.querySelectorAll('#' + aba + ' input').forEach(i => i.value = '');
+            document.getElementById('res' + aba.charAt(0).toUpperCase() + aba.slice(1)).innerHTML = '';
+        }
+        // Funções de cálculo
         function calcClearance() {
-            let u = document.getElementById('uCreat').value;
-            let s = document.getElementById('sCreat').value;
-            let v = document.getElementById('volClearance').value;
-            let p = document.getElementById('peso').value;
-            let a = document.getElementById('altura').value;
-            
+            let u = document.getElementById('uCreat').value, s = document.getElementById('sCreat').value, v = document.getElementById('volClearance').value, p = document.getElementById('peso').value, a = document.getElementById('altura').value;
             let res = (u * v) / (s * 1440);
             let txt = "Clearance: " + res.toFixed(2) + " mL/min";
-            
-            if (p > 0 && a > 0) {
-                // Fórmula de Mosteller para Superfície Corporal (m²)
-                let bsa = Math.sqrt((p * a) / 3600);
-                let corr = res * (1.73 / bsa);
-                txt += "<br>Corrigido: " + corr.toFixed(2) + " mL/min/1.73m²";
-            }
+            if (p > 0 && a > 0) { let bsa = Math.sqrt((p * a) / 3600); txt += "<br>Corrigido: " + (res * (1.73 / bsa)).toFixed(2) + " mL/min/1.73m²"; }
             document.getElementById('resClearance').innerHTML = txt;
         }
-
-        function calcUreia() {
-            let c = document.getElementById('concUreia').value;
-            let v = document.getElementById('volUreia').value;
-            document.getElementById('resUreia').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h";
-        }
-
-        function calcAU() {
-            let c = document.getElementById('concAU').value;
-            let v = document.getElementById('volAU').value;
-            document.getElementById('resAU').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h";
-        }
+        function calcUreia() { let c = document.getElementById('concUreia').value, v = document.getElementById('volUreia').value; document.getElementById('resUreia').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h"; }
+        function calcAU() { let c = document.getElementById('concAU').value, v = document.getElementById('volAU').value; document.getElementById('resAU').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h"; }
+        
+        // Ativar instalação
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>
 </html>

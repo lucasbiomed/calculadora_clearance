@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Laboratorial</title>
+    <title>Calculadora Lab</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 15px; max-width: 600px; margin: auto; background-color: #f4f7f6; }
+        body { font-family: sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #f4f7f6; }
         img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
-        .tab-button { padding: 12px 20px; cursor: pointer; border: none; background: #e0e0e0; font-weight: bold; border-radius: 5px 5px 0 0; }
+        .tab-button { padding: 12px; cursor: pointer; border: none; background: #ddd; font-weight: bold; }
         .tab-button.active { background: #2e7d32; color: white; }
-        .tab-content { display: none; padding: 25px; border-radius: 0 0 8px 8px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .tab-content { display: none; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .active { display: block; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-        button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -26,21 +26,27 @@
     </div>
 
     <div id="clearance" class="tab-content active">
-        <h3>Clearance de Creatinina</h3>
         <input type="number" id="uCreat" placeholder="Creatinina Urinária (mg/dL)">
         <input type="number" id="sCreat" placeholder="Creatinina Sérica (mg/dL)">
         <input type="number" id="volClearance" placeholder="Volume 24h (mL)">
-        <input type="number" id="peso" placeholder="Peso (kg) - Para correção">
+        <input type="number" id="peso" placeholder="Peso (kg)">
+        <input type="number" id="altura" placeholder="Altura (cm)">
         <button class="calc-btn" onclick="calcClearance()">Calcular</button>
         <p id="resClearance"></p>
     </div>
 
     <div id="ureia" class="tab-content">
-        <h3>Ureia 24h</h3>
         <input type="number" id="concUreia" placeholder="Concentração (mg/dL)">
         <input type="number" id="volUreia" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcUreia()">Calcular</button>
         <p id="resUreia"></p>
+    </div>
+
+    <div id="acidoUrico" class="tab-content">
+        <input type="number" id="concAU" placeholder="Concentração (mg/dL)">
+        <input type="number" id="volAU" placeholder="Volume 24h (mL)">
+        <button class="calc-btn" onclick="calcAU()">Calcular</button>
+        <p id="resAU"></p>
     </div>
 
     <script>
@@ -56,14 +62,31 @@
             let s = document.getElementById('sCreat').value;
             let v = document.getElementById('volClearance').value;
             let p = document.getElementById('peso').value;
+            let a = document.getElementById('altura').value;
+            
             let res = (u * v) / (s * 1440);
-            // Simulação de correção simples (ex: normalização pela superfície corporal)
-            let resCorrigido = p > 0 ? (res * (1.73 / (p * 0.01))) : res; 
-            document.getElementById('resClearance').innerHTML = 
-                "Resultado: <b>" + res.toFixed(2) + " mL/min</b><br>" + 
-                (p > 0 ? "Corrigido: " + resCorrigido.toFixed(2) + " mL/min/1.73m²" : "");
+            let txt = "Clearance: " + res.toFixed(2) + " mL/min";
+            
+            if (p > 0 && a > 0) {
+                // Fórmula de Mosteller para Superfície Corporal (m²)
+                let bsa = Math.sqrt((p * a) / 3600);
+                let corr = res * (1.73 / bsa);
+                txt += "<br>Corrigido: " + corr.toFixed(2) + " mL/min/1.73m²";
+            }
+            document.getElementById('resClearance').innerHTML = txt;
         }
-        // Funções de Ureia/Ác. Úrico omitidas para brevidade, mantenha as anteriores
+
+        function calcUreia() {
+            let c = document.getElementById('concUreia').value;
+            let v = document.getElementById('volUreia').value;
+            document.getElementById('resUreia').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h";
+        }
+
+        function calcAU() {
+            let c = document.getElementById('concAU').value;
+            let v = document.getElementById('volAU').value;
+            document.getElementById('resAU').innerText = "Resultado: " + ((c * v) / 100).toFixed(2) + " mg/24h";
+        }
     </script>
 </body>
 </html>

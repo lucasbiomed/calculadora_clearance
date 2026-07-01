@@ -8,7 +8,7 @@
     <style>
         body { font-family: sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #f4f7f6; }
         img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
-        .tab-button { padding: 12px; cursor: pointer; border: none; background: #ddd; font-weight: bold; }
+        .tab-button { padding: 12px; cursor: pointer; border: none; background: #ddd; font-weight: bold; flex: 1; }
         .tab-button.active { background: #2e7d32; color: white; }
         .tab-content { display: none; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .active { display: block; }
@@ -16,7 +16,7 @@
         button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; }
         button.clear-btn { width: 100%; padding: 10px; background: #757575; color: white; border: none; border-radius: 5px; margin-top: 5px; cursor: pointer; }
         
-        /* Nova estilização para a caixa de valores de referência */
+        /* Estilização para a caixa de valores de referência */
         .ref-box { 
             margin-top: 15px; 
             padding: 10px; 
@@ -37,6 +37,7 @@
         <button class="tab-button active" onclick="mudarAba(event, 'clearance')">Clearance</button>
         <button class="tab-button" onclick="mudarAba(event, 'ureia')">Ureia</button>
         <button class="tab-button" onclick="mudarAba(event, 'acidoUrico')">Á. Úrico</button>
+        <button class="tab-button" onclick="mudarAba(event, 'calcio')">Cálcio</button>
     </div>
 
     <div id="clearance" class="tab-content active">
@@ -82,6 +83,20 @@
         </div>
     </div>
 
+    <div id="calcio" class="tab-content">
+        <input type="number" id="concCalcio" placeholder="Concentração (mg/dL)">
+        <input type="number" id="volCalcio" placeholder="Volume 24h (mL)">
+        <button class="calc-btn" onclick="calcCalcio()">Calcular</button>
+        <button class="clear-btn" onclick="limparCampos('calcio')">Limpar</button>
+        <p id="resCalcio"></p>
+        
+        <div class="ref-box">
+            <strong>Valores de Referência (Cálcio Urinário 24h):</strong><br>
+            • Homens: 100 a 300 mg/24h<br>
+            • Mulheres: 100 a 250 mg/24h
+        </div>
+    </div>
+
     <script>
         function mudarAba(evt, nomeAba) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -93,6 +108,7 @@
             document.querySelectorAll('#' + aba + ' input').forEach(i => i.value = '');
             document.getElementById('res' + aba.charAt(0).toUpperCase() + aba.slice(1)).innerHTML = '';
         }
+        
         // Funções de cálculo
         function calcClearance() {
             let u = document.getElementById('uCreat').value, s = document.getElementById('sCreat').value, v = document.getElementById('volClearance').value, p = document.getElementById('peso').value, a = document.getElementById('altura').value;
@@ -101,8 +117,18 @@
             if (p > 0 && a > 0) { let bsa = Math.sqrt((p * a) / 3600); txt += "<br><strong>Corrigido:</strong> " + (res * (1.73 / bsa)).toFixed(2) + " mL/min/1.73m²"; }
             document.getElementById('resClearance').innerHTML = txt;
         }
-        function calcUreia() { let c = document.getElementById('concUreia').value, v = document.getElementById('volUreia').value; document.getElementById('resUreia').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; }
-        function calcAU() { let c = document.getElementById('concAU').value, v = document.getElementById('volAU').value; document.getElementById('resAU').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; }
+        function calcUreia() { 
+            let c = document.getElementById('concUreia').value, v = document.getElementById('volUreia').value; 
+            document.getElementById('resUreia').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
+        }
+        function calcAU() { 
+            let c = document.getElementById('concAU').value, v = document.getElementById('volAU').value; 
+            document.getElementById('resAU').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
+        }
+        function calcCalcio() { 
+            let c = document.getElementById('concCalcio').value, v = document.getElementById('volCalcio').value; 
+            document.getElementById('resCalcio').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
+        }
         
         // Ativar instalação
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }

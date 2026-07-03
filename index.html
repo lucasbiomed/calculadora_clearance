@@ -5,154 +5,232 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Laboratorial</title>
     <link rel="manifest" href="manifest.json">
-    <!-- Importando uma fonte moderna e profissional diretamente do Google -->
+    
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Configurações Gerais Baseadas em Design UI/UX Moderno */
+        /* Fundações de Design Global */
         body { 
             font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-            padding: 20px; 
+            padding: 24px 16px; 
             max-width: 480px; 
             margin: auto; 
-            background: #f8fafc; /* Cinza azulado bem suave de fundo */
-            color: #0f172a; /* Texto principal grafite escuro (mais elegante que o preto puro) */
+            background: #f1f5f9; /* Fundo slate suave */
+            color: #0f172a; 
             -webkit-font-smoothing: antialiased;
         }
         
         img { 
             width: 100%; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             margin-bottom: 24px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03); /* Sombra bem leve na logo */
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
         }
         
-        /* Container das abas estilo "Pílula" */
+        /* Container de Abas Estilo Navegação iOS/SaaS */
         .tabs-container {
             display: flex;
             background: #e2e8f0;
             padding: 4px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
         .tab-button { 
-            padding: 10px 4px; 
+            padding: 12px 4px; 
             cursor: pointer; 
             border: none; 
             background: transparent; 
             font-weight: 600; 
-            font-size: 14px;
+            font-size: 13px;
             color: #64748b;
             flex: 1; 
             border-radius: 9px;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .tab-button.active { 
-            background: #2e7d32; 
+            background: #15803d; /* Verde Floresta Premium */
             color: white; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15);
         }
         
-        /* Cards de Conteúdo */
+        /* Módulos de Conteúdo */
         .tab-content { 
             display: none; 
-            padding: 24px; 
+            padding: 28px 24px; 
             background: white; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05); 
+            border-radius: 20px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.03); 
         }
         
         .active { display: block; }
         
-        /* Customização Elegante dos Campos de Entrada */
-        input { 
+        /* Estrutura Premium de Formulários */
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-wrapper input { 
             width: 100%; 
-            padding: 14px; 
-            margin: 10px 0; 
+            padding: 14px 16px; 
+            padding-right: 75px; /* Abre espaço fixo para o sufixo da unidade */
+            margin: 0;
             border: 1px solid #cbd5e1; 
             border-radius: 10px; 
             box-sizing: border-box; 
             font-family: inherit;
             font-size: 15px;
+            color: #0f172a;
             background: #f8fafc;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.15s ease-in-out;
         }
         
-        input:focus {
+        .input-wrapper input:focus {
             outline: none;
-            border-color: #2e7d32;
+            border-color: #15803d;
             background: white;
-            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12); /* Efeito "glow" ao clicar */
+            box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.1);
         }
         
-        /* Botões Principais */
+        /* Badge de Unidades de Medida Internas */
+        .input-unit {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: #edf2f7;
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            text-transform: lowercase;
+        }
+        
+        /* Botões de Ação */
         button.calc-btn { 
             width: 100%; 
             padding: 16px; 
-            background: #2e7d32; 
+            background: #15803d; 
             color: white; 
             border: none; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             cursor: pointer; 
             font-weight: 600;
             font-size: 16px;
-            margin-top: 10px;
-            transition: background 0.2s ease;
+            margin-top: 12px;
+            transition: all 0.2s ease;
         }
         
-        button.calc-btn:hover {
-            background: #1b5e20;
-        }
+        button.calc-btn:hover { background: #166534; }
+        button.calc-btn:active { transform: scale(0.99); }
         
         button.clear-btn { 
             width: 100%; 
             padding: 12px; 
             background: transparent; 
-            color: #64748b; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 10px; 
-            margin-top: 8px; 
+            color: #94a3b8; 
+            border: 1px dashed #cbd5e1; 
+            border-radius: 12px; 
+            margin-top: 10px; 
             cursor: pointer; 
             font-weight: 500;
-            font-size: 14px;
-            transition: all 0.2s ease;
+            font-size: 13px;
+            transition: all 0.15s ease;
         }
         
-        button.clear-btn:hover {
-            background: #f1f5f9;
-            color: #0f172a;
+        button.clear-btn:hover { 
+            background: #fff5f5; 
+            color: #ef4444; 
+            border-style: solid;
+            border-color: #fca5a5; 
         }
         
-        /* Box de Resultados Dinâmicos */
+        /* Display de Resultados Dinâmicos (Dashboard Style) */
         .result-box {
-            margin-top: 16px;
-            padding: 14px;
+            margin-top: 20px;
+            padding: 18px;
             background: #f0fdf4;
-            border: 1px dashed #bbf7d0;
-            border-radius: 10px;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
             color: #166534;
-            font-size: 15px;
-            line-height: 1.5;
         }
-        /* Esconde a caixinha de resultado se ela estiver vazia */
+        
+        /* Animação suave para a aparição do resultado */
+        @keyframes cardPop {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-box:not(:empty) {
+            display: block;
+            animation: cardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
         .result-box:empty { display: none; }
         
-        /* Caixa de Valores de Referência Estilo Alerta Informativo */
-        .ref-box { 
-            margin-top: 24px; 
-            padding: 14px; 
-            background: #f8fafc; 
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #2e7d32; 
-            font-size: 13px; 
-            color: #475569; 
-            border-radius: 0 12px 12px 0;
-            line-height: 1.5;
+        .res-row {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
+        .res-row:not(:first-child) {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #bbf7d0;
+        }
+        .res-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #15803d; letter-spacing: 0.05em; }
+        .res-num { font-size: 24px; font-weight: 700; color: #14532d; }
+        .res-num span { font-size: 14px; font-weight: 500; color: #166534; }
+
+        /* Módulo de Valores de Referência Estilo Prufratório */
+        .ref-box { 
+            margin-top: 28px; 
+            padding: 16px; 
+            background: #fafafa; 
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+        
+        .ref-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .ref-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 13px;
+            padding: 6px 0;
+            color: #334155;
+        }
+        .ref-line:not(:last-child) { border-bottom: 1px dashed #e2e8f0; }
+        .ref-line span:first-child { color: #64748b; font-weight: 500; }
+        .ref-line span:last-child { font-weight: 600; color: #0f172a; }
     </style>
 </head>
 <body>
@@ -168,62 +246,132 @@
 
     <!-- ABA CLEARANCE -->
     <div id="clearance" class="tab-content active">
-        <input type="number" id="uCreat" placeholder="Creatinina Urinária (mg/dL)">
-        <input type="number" id="sCreat" placeholder="Creatinina Sérica (mg/dL)">
-        <input type="number" id="volClearance" placeholder="Volume 24h (mL)">
-        <input type="number" id="peso" placeholder="Peso (kg)">
-        <input type="number" id="altura" placeholder="Altura (cm)">
-        <button class="calc-btn" onclick="calcClearance()">Calcular</button>
-        <button class="clear-btn" onclick="limparCampos('clearance')">Limpar</button>
+        <div class="input-group">
+            <label>Creatinina Urinária</label>
+            <div class="input-wrapper">
+                <input type="number" id="uCreat" placeholder="0.0">
+                <span class="input-unit">mg/dL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Creatinina Sérica</label>
+            <div class="input-wrapper">
+                <input type="number" id="sCreat" placeholder="0.0">
+                <span class="input-unit">mg/dL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Volume Urinário 24h</label>
+            <div class="input-wrapper">
+                <input type="number" id="volClearance" placeholder="0">
+                <span class="input-unit">mL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Peso Corporal</label>
+            <div class="input-wrapper">
+                <input type="number" id="peso" placeholder="0.0">
+                <span class="input-unit">kg</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Altura</label>
+            <div class="input-wrapper">
+                <input type="number" id="altura" placeholder="0">
+                <span class="input-unit">cm</span>
+            </div>
+        </div>
+        
+        <button class="calc-btn" onclick="calcClearance()">Calcular Parâmetros</button>
+        <button class="clear-btn" onclick="limparCampos('clearance')">Limpar Formulário</button>
         <div id="resClearance" class="result-box"></div>
         
         <div class="ref-box">
-            <strong>Valores de Referência (Clearance de Creatinina):</strong><br>
-            • Homens: 85 a 125 mL/min<br>
-            • Mulheres: 75 a 115 mL/min
+            <span class="ref-title">Valores de Referência</span>
+            <div class="ref-line"><span>Homens</span><span>85 a 125 mL/min</span></div>
+            <div class="ref-line"><span>Mulheres</span><span>75 a 115 mL/min</span></div>
         </div>
     </div>
 
     <!-- ABA UREIA -->
     <div id="ureia" class="tab-content">
-        <input type="number" id="concUreia" placeholder="Concentração (mg/dL)">
-        <input type="number" id="volUreia" placeholder="Volume 24h (mL)">
-        <button class="calc-btn" onclick="calcUreia()">Calcular</button>
-        <button class="clear-btn" onclick="limparCampos('ureia')">Limpar</button>
+        <div class="input-group">
+            <label>Concentração de Ureia</label>
+            <div class="input-wrapper">
+                <input type="number" id="concUreia" placeholder="0.0">
+                <span class="input-unit">mg/dL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Volume Urinário 24h</label>
+            <div class="input-wrapper">
+                <input type="number" id="volUreia" placeholder="0">
+                <span class="input-unit">mL</span>
+            </div>
+        </div>
+        
+        <button class="calc-btn" onclick="calcUreia()">Calcular Parâmetros</button>
+        <button class="clear-btn" onclick="limparCampos('ureia')">Limpar Formulário</button>
         <div id="resUreia" class="result-box"></div>
         
         <div class="ref-box">
-            <strong>Valores de Referência (Ureia Urinária 24h):</strong><br>
-            • 15.000 a 35.000 mg/24h (ou 15 a 35 g/24h)
+            <span class="ref-title">Valores de Referência (24h)</span>
+            <div class="ref-line"><span>Normal</span><span>15.000 a 35.000 mg/24h</span></div>
         </div>
     </div>
 
     <!-- ABA ÁCIDO ÚRICO -->
     <div id="acidoUrico" class="tab-content">
-        <input type="number" id="concAU" placeholder="Concentração (mg/dL)">
-        <input type="number" id="volAU" placeholder="Volume 24h (mL)">
-        <button class="calc-btn" onclick="calcAU()">Calcular</button>
-        <button class="clear-btn" onclick="limparCampos('acidoUrico')">Limpar</button>
+        <div class="input-group">
+            <label>Concentração de Ácido Úrico</label>
+            <div class="input-wrapper">
+                <input type="number" id="concAU" placeholder="0.0">
+                <span class="input-unit">mg/dL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Volume Urinário 24h</label>
+            <div class="input-wrapper">
+                <input type="number" id="volAU" placeholder="0">
+                <span class="input-unit">mL</span>
+            </div>
+        </div>
+        
+        <button class="calc-btn" onclick="calcAU()">Calcular Parâmetros</button>
+        <button class="clear-btn" onclick="limparCampos('acidoUrico')">Limpar Formulário</button>
         <div id="resAU" class="result-box"></div>
         
         <div class="ref-box">
-            <strong>Valores de Referência (Ácido Úrico Urinário 24h):</strong><br>
-            • Dieta normal: 250 a 750 mg/24h
+            <span class="ref-title">Valores de Referência (24h)</span>
+            <div class="ref-line"><span>Dieta Normal</span><span>250 a 750 mg/24h</span></div>
         </div>
     </div>
 
     <!-- ABA CÁLCIO -->
     <div id="calcio" class="tab-content">
-        <input type="number" id="concCalcio" placeholder="Concentração (mg/dL)">
-        <input type="number" id="volCalcio" placeholder="Volume 24h (mL)">
-        <button class="calc-btn" onclick="calcCalcio()">Calcular</button>
-        <button class="clear-btn" onclick="limparCampos('calcio')">Limpar</button>
+        <div class="input-group">
+            <label>Concentração de Cálcio</label>
+            <div class="input-wrapper">
+                <input type="number" id="concCalcio" placeholder="0.0">
+                <span class="input-unit">mg/dL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Volume Urinário 24h</label>
+            <div class="input-wrapper">
+                <input type="number" id="volCalcio" placeholder="0">
+                <span class="input-unit">mL</span>
+            </div>
+        </div>
+        
+        <button class="calc-btn" onclick="calcCalcio()">Calcular Parâmetros</button>
+        <button class="clear-btn" onclick="limparCampos('calcio')">Limpar Formulário</button>
         <div id="resCalcio" class="result-box"></div>
         
         <div class="ref-box">
-            <strong>Valores de Referência (Cálcio Urinário 24h):</strong><br>
-            • Homens: 100 a 300 mg/24h<br>
-            • Mulheres: 100 a 250 mg/24h
+            <span class="ref-title">Valores de Referência (24h)</span>
+            <div class="ref-line"><span>Homens</span><span>100 a 300 mg/24h</span></div>
+            <div class="ref-line"><span>Mulheres</span><span>100 a 250 mg/24h</span></div>
         </div>
     </div>
 
@@ -239,31 +387,69 @@
             document.getElementById('res' + aba.charAt(0).toUpperCase() + aba.slice(1)).innerHTML = '';
         }
         
-        // Funções de cálculo
+        // Funções de cálculo estruturadas com HTML Dinâmico Premium
         function calcClearance() {
             let u = document.getElementById('uCreat').value, s = document.getElementById('sCreat').value, v = document.getElementById('volClearance').value, p = document.getElementById('peso').value, a = document.getElementById('altura').value;
+            if(!u || !s || !v) return;
+            
             let res = (u * v) / (s * 1440);
-            let txt = "<strong>Clearance:</strong> " + res.toFixed(2) + " mL/min";
-            if (p > 0 && a > 0) { let bsa = Math.sqrt((p * a) / 3600); txt += "<br><strong>Corrigido:</strong> " + (res * (1.73 / bsa)).toFixed(2) + " mL/min/1.73m²"; }
-            document.getElementById('resClearance').innerHTML = txt;
-        }
-        function calcUreia() { 
-            let c = document.getElementById('concUreia').value, v = document.getElementById('volUreia').value; 
-            document.getElementById('resUreia').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
-        }
-        function calcAU() { 
-            let c = document.getElementById('concAU').value, v = document.getElementById('volAU').value; 
-            document.getElementById('resAU').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
-        }
-        function calcCalcio() { 
-            let c = document.getElementById('concCalcio').value, v = document.getElementById('volCalcio').value; 
-            document.getElementById('resCalcio').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
+            let html = `
+                <div class="res-row">
+                    <span class="res-label">Clearance de Creatinina</span>
+                    <span class="res-num">${res.toFixed(2)} <span>mL/min</span></span>
+                </div>
+            `;
+            
+            if (p > 0 && a > 0) { 
+                let bsa = Math.sqrt((p * a) / 3600); 
+                let corr = res * (1.73 / bsa);
+                html += `
+                    <div class="res-row">
+                        <span class="res-label">Depuração Corrigida (M² Corpórea)</span>
+                        <span class="res-num">${corr.toFixed(2)} <span>mL/min/1.73m²</span></span>
+                    </div>
+                `;
+            }
+            document.getElementById('resClearance').innerHTML = html;
         }
         
-        // Ativar instalação PWA
+        function calcUreia() { 
+            let c = document.getElementById('concUreia').value, v = document.getElementById('volUreia').value; 
+            if(!c || !v) return;
+            let resVal = ((c * v) / 100).toFixed(2);
+            document.getElementById('resUreia').innerHTML = `
+                <div class="res-row">
+                    <span class="res-label">Excreção Total de Ureia</span>
+                    <span class="res-num">${resVal} <span>mg/24h</span></span>
+                </div>
+            `;
+        }
+        
+        function calcAU() { 
+            let c = document.getElementById('concAU').value, v = document.getElementById('volAU').value; 
+            if(!c || !v) return;
+            let resVal = ((c * v) / 100).toFixed(2);
+            document.getElementById('resAU').innerHTML = `
+                <div class="res-row">
+                    <span class="res-label">Excreção de Ácido Úrico</span>
+                    <span class="res-num">${resVal} <span>mg/24h</span></span>
+                </div>
+            `;
+        }
+        
+        function calcCalcio() { 
+            let c = document.getElementById('concCalcio').value, v = document.getElementById('volCalcio').value; 
+            if(!c || !v) return;
+            let resVal = ((c * v) / 100).toFixed(2);
+            document.getElementById('resCalcio').innerHTML = `
+                <div class="res-row">
+                    <span class="res-label">Cálcio Total Urinário</span>
+                    <span class="res-num">${resVal} <span>mg/24h</span></span>
+                </div>
+            `;
+        }
+        
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>
 </html>
-
-

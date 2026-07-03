@@ -5,27 +5,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Laboratorial</title>
     <link rel="manifest" href="manifest.json">
+    <!-- Importando uma fonte moderna e profissional diretamente do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #f4f7f6; }
-        img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
-        .tab-button { padding: 12px; cursor: pointer; border: none; background: #ddd; font-weight: bold; flex: 1; }
-        .tab-button.active { background: #2e7d32; color: white; }
-        .tab-content { display: none; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .active { display: block; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button.calc-btn { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button.clear-btn { width: 100%; padding: 10px; background: #757575; color: white; border: none; border-radius: 5px; margin-top: 5px; cursor: pointer; }
+        /* Configurações Gerais Baseadas em Design UI/UX Moderno */
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            padding: 20px; 
+            max-width: 480px; 
+            margin: auto; 
+            background: #f8fafc; /* Cinza azulado bem suave de fundo */
+            color: #0f172a; /* Texto principal grafite escuro (mais elegante que o preto puro) */
+            -webkit-font-smoothing: antialiased;
+        }
         
-        /* Estilização para a caixa de valores de referência */
+        img { 
+            width: 100%; 
+            border-radius: 12px; 
+            margin-bottom: 24px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); /* Sombra bem leve na logo */
+        }
+        
+        /* Container das abas estilo "Pílula" */
+        .tabs-container {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button { 
+            padding: 10px 4px; 
+            cursor: pointer; 
+            border: none; 
+            background: transparent; 
+            font-weight: 600; 
+            font-size: 14px;
+            color: #64748b;
+            flex: 1; 
+            border-radius: 9px;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active { 
+            background: #2e7d32; 
+            color: white; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Cards de Conteúdo */
+        .tab-content { 
+            display: none; 
+            padding: 24px; 
+            background: white; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05); 
+        }
+        
+        .active { display: block; }
+        
+        /* Customização Elegante dos Campos de Entrada */
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            box-sizing: border-box; 
+            font-family: inherit;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #2e7d32;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12); /* Efeito "glow" ao clicar */
+        }
+        
+        /* Botões Principais */
+        button.calc-btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: #2e7d32; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background 0.2s ease;
+        }
+        
+        button.calc-btn:hover {
+            background: #1b5e20;
+        }
+        
+        button.clear-btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: transparent; 
+            color: #64748b; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            margin-top: 8px; 
+            cursor: pointer; 
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        button.clear-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        
+        /* Box de Resultados Dinâmicos */
+        .result-box {
+            margin-top: 16px;
+            padding: 14px;
+            background: #f0fdf4;
+            border: 1px dashed #bbf7d0;
+            border-radius: 10px;
+            color: #166534;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        /* Esconde a caixinha de resultado se ela estiver vazia */
+        .result-box:empty { display: none; }
+        
+        /* Caixa de Valores de Referência Estilo Alerta Informativo */
         .ref-box { 
-            margin-top: 15px; 
-            padding: 10px; 
-            background: #e8f5e9; 
+            margin-top: 24px; 
+            padding: 14px; 
+            background: #f8fafc; 
+            border: 1px solid #e2e8f0;
             border-left: 4px solid #2e7d32; 
             font-size: 13px; 
-            color: #333; 
-            border-radius: 0 5px 5px 0;
-            line-height: 1.4;
+            color: #475569; 
+            border-radius: 0 12px 12px 0;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -33,13 +159,14 @@
 
     <img src="https://i.postimg.cc/BvSSwgKV/SFLOGO.jpg" alt="Logo">
     
-    <div style="display: flex;">
+    <div class="tabs-container">
         <button class="tab-button active" onclick="mudarAba(event, 'clearance')">Clearance</button>
         <button class="tab-button" onclick="mudarAba(event, 'ureia')">Ureia</button>
         <button class="tab-button" onclick="mudarAba(event, 'acidoUrico')">Á. Úrico</button>
         <button class="tab-button" onclick="mudarAba(event, 'calcio')">Cálcio</button>
     </div>
 
+    <!-- ABA CLEARANCE -->
     <div id="clearance" class="tab-content active">
         <input type="number" id="uCreat" placeholder="Creatinina Urinária (mg/dL)">
         <input type="number" id="sCreat" placeholder="Creatinina Sérica (mg/dL)">
@@ -48,7 +175,7 @@
         <input type="number" id="altura" placeholder="Altura (cm)">
         <button class="calc-btn" onclick="calcClearance()">Calcular</button>
         <button class="clear-btn" onclick="limparCampos('clearance')">Limpar</button>
-        <p id="resClearance"></p>
+        <div id="resClearance" class="result-box"></div>
         
         <div class="ref-box">
             <strong>Valores de Referência (Clearance de Creatinina):</strong><br>
@@ -57,12 +184,13 @@
         </div>
     </div>
 
+    <!-- ABA UREIA -->
     <div id="ureia" class="tab-content">
         <input type="number" id="concUreia" placeholder="Concentração (mg/dL)">
         <input type="number" id="volUreia" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcUreia()">Calcular</button>
         <button class="clear-btn" onclick="limparCampos('ureia')">Limpar</button>
-        <p id="resUreia"></p>
+        <div id="resUreia" class="result-box"></div>
         
         <div class="ref-box">
             <strong>Valores de Referência (Ureia Urinária 24h):</strong><br>
@@ -70,12 +198,13 @@
         </div>
     </div>
 
+    <!-- ABA ÁCIDO ÚRICO -->
     <div id="acidoUrico" class="tab-content">
         <input type="number" id="concAU" placeholder="Concentração (mg/dL)">
         <input type="number" id="volAU" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcAU()">Calcular</button>
         <button class="clear-btn" onclick="limparCampos('acidoUrico')">Limpar</button>
-        <p id="resAU"></p>
+        <div id="resAU" class="result-box"></div>
         
         <div class="ref-box">
             <strong>Valores de Referência (Ácido Úrico Urinário 24h):</strong><br>
@@ -83,12 +212,13 @@
         </div>
     </div>
 
+    <!-- ABA CÁLCIO -->
     <div id="calcio" class="tab-content">
         <input type="number" id="concCalcio" placeholder="Concentração (mg/dL)">
         <input type="number" id="volCalcio" placeholder="Volume 24h (mL)">
         <button class="calc-btn" onclick="calcCalcio()">Calcular</button>
         <button class="clear-btn" onclick="limparCampos('calcio')">Limpar</button>
-        <p id="resCalcio"></p>
+        <div id="resCalcio" class="result-box"></div>
         
         <div class="ref-box">
             <strong>Valores de Referência (Cálcio Urinário 24h):</strong><br>
@@ -130,7 +260,7 @@
             document.getElementById('resCalcio').innerHTML = "<strong>Resultado:</strong> " + ((c * v) / 100).toFixed(2) + " mg/24h"; 
         }
         
-        // Ativar instalação
+        // Ativar instalação PWA
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>

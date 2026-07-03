@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Laboratorial</title>
-    <link rel="manifest" href="manifest.json">
+    <link class="manifest" href="manifest.json">
     
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,7 +235,7 @@
 </head>
 <body>
 
-    <img src="https://i.postimg.cc/BvSSwgKV/SFLOGO.jpg" alt="Logo">
+    <img src="https://i.postimg.cc/tRs41kHZ/logo-top2.png" alt="Laboratório São Francisco">
     
     <div class="tabs-container">
         <button class="tab-button active" onclick="mudarAba(event, 'clearance')">Clearance</button>
@@ -387,7 +387,6 @@
             document.getElementById('res' + aba.charAt(0).toUpperCase() + aba.slice(1)).innerHTML = '';
         }
         
-        // Funções de cálculo estruturadas com HTML Dinâmico Premium
         function calcClearance() {
             let u = document.getElementById('uCreat').value, s = document.getElementById('sCreat').value, v = document.getElementById('volClearance').value, p = document.getElementById('peso').value, a = document.getElementById('altura').value;
             if(!u || !s || !v) return;
